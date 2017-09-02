@@ -1,12 +1,11 @@
 " +---------------------------------------------------------+
 " |General vim settings.                                    |
 " +---------------------------------------------------------+
-syntax on
-filetype off
+syntax enable
+filetype on
 set autoindent        " Indented text
 set autoread          " Pick up external changes to files
 set autowrite         " Write files when navigating with :next/:previous
-set background=dark
 set backspace=indent,eol,start
 set belloff=all       " Bells are annoying
 set infercase         " Smart casing when completing
@@ -51,6 +50,12 @@ if has("multi_byte")
   set fileencodings=ucs-bom,utf-8,latin1
 endif
 
+if has('gui_running')
+    set background=light
+else
+    set background=dark
+endif
+
 " +---------------------------------------------------------+
 " |Plugins installation through vundle                      |
 " +---------------------------------------------------------+
@@ -70,11 +75,14 @@ Plugin 'VundleVim/Vundle.vim'
 Plugin 'scrooloose/nerdtree'
 Plugin 'vim-airline/vim-airline'
 Plugin 'Valloric/YouCompleteMe'
+Plugin 'ervandew/supertab'
 Plugin 'SirVer/ultisnips'
 Plugin 'honza/vim-snippets'
 Plugin 'justinmk/vim-sneak'
 Plugin 'w0rp/ale'
 Plugin 'ctrlpvim/ctrlp.vim'
+Plugin 'altercation/vim-colors-solarized'
+Plugin 'wkentaro/conque.vim'
 
 " The sparkup vim script is in a subdirectory of this repo called vim.
 Plugin 'rstacruz/sparkup', {'rtp': 'vim/'}
@@ -94,8 +102,24 @@ filetype plugin indent on
 " open NERDTree automatically when vim starts up on opening a directory
 autocmd StdinReadPre * let s:std_in=1
 autocmd VimEnter * if argc() == 1 && isdirectory(argv()[0]) && !exists("s:std_in") | exe 'NERDTree' argv()[0] | wincmd p | ene | endif
+"autocmd BufEnter * if !argc() | NERDTreeMirror | endif
+autocmd VimEnter * wincmd w
+
 " map control+t to toogle action 
 map <C-n> :NERDTreeToggle<CR>
+
+" +---------------------------------------------------------+
+" |YouCompleteMe/ultisnips                                  |
+" +---------------------------------------------------------+
+" make YCM compatible with UltiSnips (using supertab)
+let g:ycm_key_list_select_completion = ['<C-n>', '<Down>']
+let g:ycm_key_list_previous_completion = ['<C-p>', '<Up>']
+let g:SuperTabDefaultCompletionType = '<C-n>'
+
+" better key bindings for UltiSnipsExpandTrigger
+let g:UltiSnipsExpandTrigger = "<tab>"
+let g:UltiSnipsJumpForwardTrigger = "<tab>"
+let g:UltiSnipsJumpBackwardTrigger = "<s-tab>"
 
 " +---------------------------------------------------------+
 " |vim-commentary configuration                             |
@@ -124,4 +148,6 @@ let g:ale_fix_on_save = 1
 let g:ctrlp_user_command = ['.git', 'cd %s && git ls-files -co --exclude-standard']
 let g:ctrlp_map = '<c-p>'
 let g:ctrlp_cmd = 'CtrlP'
+
+colorscheme solarized
 
