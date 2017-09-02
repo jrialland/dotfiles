@@ -30,6 +30,9 @@ set wildmenu
 set wildmode=full
 set shell=/bin/bash
 
+" line numbers
+set number
+
 " Do not keep backup files
 set nowb
 set nobackup
@@ -37,6 +40,16 @@ set noswapfile
 set undofile
 set undodir=$HOME/.vim/undodir
 
+" encoding
+if has("multi_byte")
+  if &termencoding == ""
+    let &termencoding = &encoding
+  endif
+  set encoding=utf-8
+  setglobal fileencoding=utf-8
+  "setglobal bomb
+  set fileencodings=ucs-bom,utf-8,latin1
+endif
 
 " +---------------------------------------------------------+
 " |Plugins installation through vundle                      |
