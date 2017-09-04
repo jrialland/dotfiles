@@ -1,0 +1,31 @@
+#!/usr/bin/env python3
+# -*- coding:utf-8 -*-
+import sys
+import sqlite3
+import argparse
+
+conn = sqlite3.connect(':memory:')
+maxsize = 0 
+rawdata = []
+for line in sys.stdin.readlines():
+    linedata = line.split()
+    maxsize = max(maxsize, len(linedata))
+    rawdata.append(linedata)
+sqlCreate = 'create table data(' + (', '.join(['col{} text'.format(i) for i in range(maxsize)]))+ ')'
+sqlInsert = 'insert into data values ({})'.format(', '.join(['?' for i in range(maxsize)]))
+conn.execute(sqlCreate)
+for data in rawdata:
+    missing = maxsize-len(data)
+    if missing > 0:
+        data = data + [None]*missing
+    conn.execute(sqlInsert, data)
+conn.commit()
+
+
+parser = argparse.ArgumentParser(description='Transforms input into a temporary sql db')
+parser.add_argument('--query', default='select * from data', help='sql query to execute')
+args = parser.parse_args()
+
+for row in conn.execute(args.query):
+    print(' '.join([str(x) if x else '' for x in row]))
+
