@@ -1,0 +1,37 @@
+#!/usr/bin/env bash
+set -e
+tomcat_version=8.5.20
+#tomcat_version=7.0.77
+#tomcat_version=6.0.53
+
+tomcat_major=$(echo $tomcat_version|sed -e 's/^\([0-9]\).*$/\1/')
+tmpdir=/tmp/runwar
+if [ ! -d ${tmpdir}/tomcat ]; then
+    mkdir -p ${tmpdir}
+    pushd ${tmpdir} >/dev/null
+    wget http://apache.crihan.fr/dist/tomcat/tomcat-${tomcat_major}/v${tomcat_version}/bin/apache-tomcat-${tomcat_version}.tar.gz
+    tar -zxf apache-tomcat-${tomcat_version}.tar.gz
+    rm apache-tomcat-${tomcat_version}.tar.gz
+    ln -s apache-tomcat-${tomcat_version} tomcat
+    popd >/dev/null
+fi
+if [ -f "$1" ]; then
+    deployed=$(readlink -m $1)
+    path=$(basename $deployed | sed -e s/\.war$//)
+    echo $deployed
+    rm -rf $(find ${tmpdir}/tomcat/webapps -mindepth 1 -maxdepth 1)
+    ln -s ${deployed} ${tmpdir}/tomcat/webapps/$(basename $deployed)
+    xdg-open 'http://localhost:8080/'$path
+    ${tmpdir}/tomcat/bin/catalina.sh run
+elif [ -d "$1" ]; then
+    path=$(basename $(readlink -m $1))
+    echo $path
+    rm -f "${tmpdir}/tomcat/webapps/${path}" 2>/dev/null
+    ln -s $(readlink -m $1) "${tmpdir}/tomcat/webapps/${path}"
+    xdg-open 'http://localhost:8080/'$path
+    ${tmpdir}/tomcat/bin/catalina.sh run
+else
+   echo "usage : $0 <war file or directory>" >&2
+   exit 1
+fi
+

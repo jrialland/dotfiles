@@ -82,7 +82,6 @@ Plugin 'honza/vim-snippets'
 Plugin 'justinmk/vim-sneak'
 Plugin 'w0rp/ale'
 Plugin 'ctrlpvim/ctrlp.vim'
-Plugin 'altercation/vim-colors-solarized'
 Plugin 'wkentaro/conque.vim'
 " Plugin 'krisajenkins/vim-pipe'
 
@@ -91,6 +90,8 @@ Plugin 'rstacruz/sparkup', {'rtp': 'vim/'}
 
 Plugin 'tpope/vim-commentary'
 
+" Plugin 'altercation/vim-colors-solarized'
+" colorscheme solarized
 " -----------------------------------------------------------
 call vundle#end()
 filetype plugin indent on
@@ -151,7 +152,6 @@ let g:ctrlp_user_command = ['.git', 'cd %s && git ls-files -co --exclude-standar
 let g:ctrlp_map = '<c-p>'
 let g:ctrlp_cmd = 'CtrlP'
 
-colorscheme solarized
 
 
 " Treat .json files as .js
