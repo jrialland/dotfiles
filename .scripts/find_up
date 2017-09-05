@@ -1,0 +1,27 @@
+#!/usr/bin/env python2
+import os.path
+import sys
+
+def find_up(filelist):
+    for f in filelist:
+        currentdir = os.path.abspath('./')
+        found = None
+        while currentdir != '/':
+            if f in os.listdir(currentdir):
+                found = os.path.join(currentdir, f)
+                break
+            else:
+                currentdir = os.path.abspath(os.path.join(currentdir,'..'))
+        if found:
+            return found
+
+if __name__ == '__main__':
+    if len(sys.argv) ==1 :
+        print >>sys.stderr, 'usage : '+sys.argv[0]+' <filename>'
+        sys.exit(2)
+    else:
+        found = find_up(sys.argv[1:])
+        if found:
+            print found
+        else:
+            sys.exit(1)
