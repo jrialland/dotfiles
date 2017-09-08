@@ -10,6 +10,7 @@ set backspace=indent,eol,start
 set belloff=all       " Bells are annoying
 set infercase         " Smart casing when completing
 set ignorecase        " Search in case-insensitively
+set smartcase
 set incsearch         " Go to search results immediately
 set laststatus=2      " We want a statusline
 set mouse=a           " Mouse support in the terminal
@@ -82,6 +83,7 @@ Plugin 'justinmk/vim-sneak'
 Plugin 'w0rp/ale'
 Plugin 'ctrlpvim/ctrlp.vim'
 Plugin 'wkentaro/conque.vim'
+" Plugin 'krisajenkins/vim-pipe'
 
 " The sparkup vim script is in a subdirectory of this repo called vim.
 Plugin 'rstacruz/sparkup', {'rtp': 'vim/'}
@@ -150,4 +152,35 @@ let g:ctrlp_user_command = ['.git', 'cd %s && git ls-files -co --exclude-standar
 let g:ctrlp_map = '<c-p>'
 let g:ctrlp_cmd = 'CtrlP'
 
+
+
+" Treat .json files as .js
+autocmd BufNewFile,BufRead *.json setfiletype json syntax=javascript
+" Treat .md files as Markdown
+autocmd BufNewFile,BufRead *.md setlocal filetype=markdown
+
+" Gradle stuff (groovy)
+augroup gradle
+    " Remove all other autocmds.
+    autocmd!
+    " Set syntax highlighting to Groovy
+    autocmd BufRead,BufNewFile *.gradle set filetype=groovy
+    " We seem to be using tabs for these
+    autocmd Filetype groovy setlocal nolist
+    autocmd Filetype groovy setlocal noexpandtab
+augroup end
+
+
+" Python commands.
+augroup python
+    " Remove all other autocmds.
+    autocmd!
+    " Automatically turn tabs into spaces in .py files.
+    autocmd Filetype python retab!
+    " Make tab characters stand out
+    autocmd Filetype python setlocal list
+    " This errorformat isn't perfect for either pep8 or pylint, but it works
+    " decently for both.
+    autocmd Filetype python setlocal errorformat=%f:%l%m
+augroup end!
 
