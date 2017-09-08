@@ -75,6 +75,7 @@ call vundle#begin()
 Plugin 'VundleVim/Vundle.vim'
 Plugin 'scrooloose/nerdtree'
 Plugin 'vim-airline/vim-airline'
+Plugin 'vim-airline/vim-airline-themes'
 Plugin 'Valloric/YouCompleteMe'
 Plugin 'ervandew/supertab'
 Plugin 'SirVer/ultisnips'
@@ -150,6 +151,9 @@ nnoremap <Leader>a :Ack!<Space>
 " +---------------------------------------------------------+
 " |gundo  (https://sjl.bitbucket.io/gundo.vim/)             |
 " +---------------------------------------------------------+
+if has('python3')
+    let g:gundo_prefer_python3 = 1
+endif
 nnoremap <F5> :GundoToggle<CR>
 
 
