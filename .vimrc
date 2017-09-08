@@ -78,12 +78,8 @@ Plugin 'vim-airline/vim-airline'
 Plugin 'Valloric/YouCompleteMe'
 Plugin 'ervandew/supertab'
 Plugin 'SirVer/ultisnips'
-Plugin 'honza/vim-snippets'
-Plugin 'justinmk/vim-sneak'
-Plugin 'w0rp/ale'
-Plugin 'ctrlpvim/ctrlp.vim'
-Plugin 'wkentaro/conque.vim'
-" Plugin 'krisajenkins/vim-pipe'
+Plugin 'mileszs/ack.vim'
+Plugin 'sjl/gundo.vim'
 
 " The sparkup vim script is in a subdirectory of this repo called vim.
 Plugin 'rstacruz/sparkup', {'rtp': 'vim/'}
@@ -97,7 +93,17 @@ call vundle#end()
 filetype plugin indent on
 " End of vundle configuration
 
-
+" +---------------------------------------------------------+
+" |airline configuration                                    |
+" +---------------------------------------------------------+
+let g:airline_powerline_fonts = 1
+if !exists('g:airline_symbols')
+      let g:airline_symbols = {}
+endif
+let g:airline_symbols.space = "\ua0"
+let g:airline#extensions#tabline#enabled = 1
+let g:airline#extensions#tabline#show_buffers = 0
+let g:airline_theme = 'molokai'
 
 " +---------------------------------------------------------+
 " |NERDTree configuration    (:help NERDTree.txt)           |
@@ -125,35 +131,29 @@ let g:UltiSnipsJumpForwardTrigger = "<tab>"
 let g:UltiSnipsJumpBackwardTrigger = "<s-tab>"
 
 " +---------------------------------------------------------+
-" |vim-commentary configuration                             |
-" +---------------------------------------------------------+
-" specify the right comment char for apache config files
-autocmd FileType apache setlocal commentstring=#\ %s
-
-" +---------------------------------------------------------+
-" |vim-sneak configuration                                  |
-" +---------------------------------------------------------+
-" replace f motion by sneak
-map f <Plug>Sneak_s
-map F <Plug>Sneak_S
-
-" +---------------------------------------------------------+
-" |w0rp/ale configuration    (:help ale-completion)         |
-" +---------------------------------------------------------+
-" :ALEFix fixes your js code with ESLint.
-let g:ale_fixers = { 'javascript': ['eslint'] }
-" lint on save
-let g:ale_fix_on_save = 1
-
-" +---------------------------------------------------------+
 " |ctrlp configuration                                      |
 " +---------------------------------------------------------+
 let g:ctrlp_user_command = ['.git', 'cd %s && git ls-files -co --exclude-standard']
 let g:ctrlp_map = '<c-p>'
 let g:ctrlp_cmd = 'CtrlP'
 
+" +---------------------------------------------------------+
+" |ack.vim                                                  |
+" +---------------------------------------------------------+
+" sudo apt-get install silversearcher-ag
+if executable('ag')
+  let g:ackprg = 'ag --vimgrep'
+endif
+cnoreabbrev Ack Ack!
+nnoremap <Leader>a :Ack!<Space>
+
+" +---------------------------------------------------------+
+" |gundo  (https://sjl.bitbucket.io/gundo.vim/)             |
+" +---------------------------------------------------------+
+nnoremap <F5> :GundoToggle<CR>
 
 
+" -----------------------------------------------------------
 " Treat .json files as .js
 autocmd BufNewFile,BufRead *.json setfiletype json syntax=javascript
 " Treat .md files as Markdown
@@ -170,7 +170,7 @@ augroup gradle
     autocmd Filetype groovy setlocal noexpandtab
 augroup end
 
-
+" -----------------------------------------------------------
 " Python commands.
 augroup python
     " Remove all other autocmds.
@@ -183,4 +183,8 @@ augroup python
     " decently for both.
     autocmd Filetype python setlocal errorformat=%f:%l%m
 augroup end!
+
+
+" see also http://www.terminally-incoherent.com/blog/2013/05/06/vriting-vim-plugins-in-python/
+
 

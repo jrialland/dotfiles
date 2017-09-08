@@ -1,45 +1,50 @@
 #!/usr/bin/env python2
-import os, os.path, fnmatch
+import os
+import os.path
+import fnmatch
 import sys
 import hashlib
 import re
 
-def hexhash(alg, filename):
-	if alg == 'md5':
-		m = hashlib.md5()
-	elif alg == "sha1":
-		m = hashlib.sha1()
-	else:
-		raise Exception()
 
-	with file(filename, 'rb') as f:
-		for d in f:m.update(d)
-	return m.hexdigest()
+def hexhash(alg, filename):
+        if alg == 'md5':
+                m = hashlib.md5()
+        elif alg == "sha1":
+                m = hashlib.sha1()
+        else:
+                raise Exception()
+
+        with file(filename, 'rb') as f:
+                for d in f:
+                        m.update(d)
+        return m.hexdigest()
+
 
 def rglob(basedir='./', pattern='*'):
-	basedir = os.path.abspath(basedir)
-	for root, dirnames, filenames in os.walk(basedir):
-		if not '/.' in root:
-			for filename in fnmatch.filter(filenames, pattern):
-				yield os.path.join(root, filename)
+        basedir = os.path.abspath(basedir)
+        for root, dirnames, filenames in os.walk(basedir):
+                if not '/.' in root:
+                        for filename in fnmatch.filter(filenames, pattern):
+                                yield os.path.join(root, filename)
 
 if __name__ == '__main__':
-	
-	if len(sys.argv) < 2:
-		print 'usage : ', sys.argv[0], '<directory>'
-		sys.exit(1)
-        
+
+        if len(sys.argv) < 2:
+                print 'usage : ', sys.argv[0], '<directory>'
+                sys.exit(1)
+
     if not os.path.isdir(sys.argv[1]):
         print >>sys.stderr, 'Not a directory.'
         sys.exit(2)
         
-	for f in rglob(sys.argv[1]):
-		if os.path.isfile(f):
-			if not f.endswith('.md5') and not f.endswith('.sha1'):
-				with file(f+'.md5','w') as md5file:
-					print f+'.md5'
-					md5file.write(hexhash('md5', f))
-				with file(f+'.sha1','w') as sha1file:
-					print f+'.sha1'
-					sha1file.write(hexhash('sha1', f))
+        for f in rglob(sys.argv[1]):
+                if os.path.isfile(f):
+                        if not f.endswith('.md5') and not f.endswith('.sha1'):
+                                with file(f+'.md5','w') as md5file:
+                                        print f+'.md5'
+                                        md5file.write(hexhash('md5', f))
+                                with file(f+'.sha1','w') as sha1file:
+                                        print f+'.sha1'
+                                        sha1file.write(hexhash('sha1', f))
                     
