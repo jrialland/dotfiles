@@ -100,12 +100,15 @@ fi
 
 # source all scripts from .bashrc.d
 if [ -d ~/.bashrc.d ]; then
-    for file in $(find ~/.bashrc.d -type f); do
-        . $file;
+    for f in $(find -L ~/.bashrc.d -type f); do
+        . $f
     done
 fi
 
+#load nvm
+if [ -d ~/.nvm ]; then
+	export NVM_DIR="$HOME/.nvm"
+	[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+	[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+fi
 
-export NVM_DIR="$HOME/.nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
-[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion

@@ -1,5 +1,5 @@
 #!/bin/bash
 if [ -d ~/.scripts ]; then
-    export PATH=~/scripts:$PATH
+    export PATH=~/.scripts:$PATH
 fi
 
