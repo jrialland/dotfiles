@@ -1,0 +1,18 @@
+#!/bin/bash
+set -e
+
+tmpdir=~/.antlrworks2
+
+if [ ! -d $tmpdir ]; then
+   mkdir $tmpdir -p
+   if [ ! -f $tmpdir/2013-07-21-antlrworks-2.1.zip ]; then
+       wget http://tunnelvisionlabs.com/downloads/antlr/2013-07-21-antlrworks-2.1.zip -O $tmpdir/2013-07-21-antlrworks-2.1.zip
+   fi
+   pushd $tmpdir > /dev/null
+   unzip 2013-07-21-antlrworks-2.1.zip
+   rm 2013-07-21-antlrworks-2.1.zip
+   chmod +x antlrworks2/bin/antlrworks2
+   popd > /dev/null
+fi
+
+$tmpdir/antlrworks2/bin/antlrworks2 "$@"
