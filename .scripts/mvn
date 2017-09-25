@@ -8,5 +8,5 @@ if [ ! -d "$TMP_DIR" ]; then
 fi
 MVN_PATH="/tmp/mvnw/$MVN_DIST_VER/apache-maven-$MVN_DIST_VER/bin"
 export PATH=$PATH:$MVN_PATH
-"$MVN_PATH/mvn" "$@"
+mvn "$@"
 
