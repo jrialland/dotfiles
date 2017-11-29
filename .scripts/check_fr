@@ -1,0 +1,11 @@
+#!/bin/bash
+# appelle la correction orthographe/grammaire sur languagetool.org, puis formate le résultat json avec jq
+
+T=$(echo "$*")
+curl -s --fail -X POST --header 'Content-Type: application/x-www-form-urlencoded' \
+    --header 'Accept: application/json' \
+    --data-urlencode "text=$T" \
+    --data-urlencode "language=fr" \
+    --data-urlencode "enabledOnly=false" \
+    'https://languagetool.org/api/v2/check'|jq
+echo
