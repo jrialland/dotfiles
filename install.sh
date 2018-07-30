@@ -18,3 +18,7 @@ done
 
 popd >/dev/null
 
+pushd ~/.vim/bundle >/dev/null
+git submodule update Vundle.vim
+popd >/dev/null
+
