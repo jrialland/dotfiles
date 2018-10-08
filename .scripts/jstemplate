@@ -3,58 +3,70 @@
 const fs = require('fs');
 
 const escapeJs = (s) => {
-   return JSON.stringify([s]).replace(/^\[(.*)\]$/, '$1');
+    return JSON.stringify([s]).replace(/^\["(.*)\"]$/, '$1');
 }
 
-const runTemplate = (template, params) => {
-   let code = "let _out = process.stdout;\n";
-   code += "_out.cork();\n"
-   let paramNames = Object.keys(params);
-   let argNames = paramNames.map((s)=>"this."+s);
-   let regex = /<%(=?)([^%>]+)?%>/g;
-   let offset = 0;
-   let match = null;
-   while(match = regex.exec(template)) {
-      s = template.slice(offset, match.index);
-      if(s) {
-           code += "_out.write(" + escapeJs(s) + ");\n";
-      }
-      if(match[1]) {
-          code += "_out.write(''+" + match[2] + ");\n";
-      } else {
-          code += match[2];
-      }
-      offset = match.index + match[0].length;
-   }
-   code += "_out.write(" + escapeJs(template.substr(offset, template.length - offset)) + ");\n";
-   code += "_out.uncork();\n";
-   code = "(function(" + paramNames.join(',') + ") {\n" + code + "}(" + argNames.join(",") + "));";
-   //console.log(code);
-   return new Function(code).bind(params).apply();
+const runTemplate = (template, params, out) => {
+    let code = "_out.cork();\n"
+    let paramNames = Object.keys(params);
+    paramNames.push("_out");
+    let argNames = paramNames.map((s) => "this." + s);
+    let regex = /<%(=?)([^%]+)%>/gm;
+    let offset = 0;
+    let match = null;
+    let rawWrite = (s) => {
+        if(s) {
+            let escaped = escapeJs(s);
+            let offset = 0;
+            let r = /\\n/g;
+            while(m = r.exec(escaped)) {
+               let newoffset = m.index+m[0].length;
+               code += "_out.write(\"" + escaped.slice(offset, newoffset) + "\");\n";
+               offset = newoffset;
+            }
+            let remaining = escaped.substr(offset);
+            if(remaining) {
+                code += "_out.write(\"" + remaining + "\");\n";
+            }
+            
+	}
+    };
+    while(match = regex.exec(template)) {
+        s = template.slice(offset, match.index);
+        rawWrite(s);
+        if(match[1]) {
+            code += "_out.write(''+" + match[2] + ");\n";
+        } else {
+            code += match[2] + '\n';
+        }
+        offset = match.index + match[0].length;
+    }
+    rawWrite(template.substr(offset));
+
+    code += "_out.uncork();\n";
+    code = "(function(" + paramNames.join(',') + ") {\n" + code + "}(" + argNames.join(",") + "));";
+    //console.log(code);
+    new Function(code).bind({...params, '_out':out}).apply();
 }
 
 const main = (argv) => {
-	if(argv.length != 3) {
-		throw new Error("usage : " + argv[1] + " <template>");
-	}
-	let fileName = argv[2];
-        if(!fs.existsSync(fileName)) {
-		throw new Error("No such file : " + argv[2]);
-	}
-
-	let template = fs.readFileSync(argv[argv.length-1]).toString("utf-8");
-	
-	let stdin = fs.readFileSync("/dev/stdin", "utf-8");
-
-        let data = {
-            env : process.env
-        };
-
-	if(stdin) {
-            data = Object.assign(data, JSON.parse(stdin));
-        }
-
-	runTemplate(template, data);
+    if(argv.length != 3) {
+        throw new Error("usage : " + argv[1] + " <template>");
+    }
+    let fileName = argv[2];
+    if(!fs.existsSync(fileName)) {
+        throw new Error("No such file : " + argv[2]);
+    }
+    let template = fs.readFileSync(argv[argv.length - 1]).toString("utf-8");
+    let stdin = fs.readFileSync("/dev/stdin", "utf-8").trim();
+    let data = {
+        env: process.env
+    };
+    if(stdin) {
+        data = Object.assign(data, JSON.parse(stdin));
+    }
+    runTemplate(template, data, process.stdout);
+    return 0;
 }
 
 process.exit(main(process.argv));
