@@ -24,8 +24,18 @@ conn.commit()
 
 parser = argparse.ArgumentParser(description='Transforms input into a temporary sql db')
 parser.add_argument('--query', default='select * from data', help='sql query to execute')
-args = parser.parse_args()
+parser.add_argument('--header', dest='header', action='store_true')
+parser.set_defaults(header=False)
 
-for row in conn.execute(args.query):
-    print(' '.join([str(x) if x else '' for x in row]))
+parser.add_argument('--separator', dest='separator', default=' ')
+
+
+args = parser.parse_args()
+rs = conn.execute(args.query)
+
+if args.header:
+    print(args.separator.join([d[0] for d in rs.description]))
+
+for row in rs:
+    print(args.separator.join([str(x) if x else '' for x in row]))
 
