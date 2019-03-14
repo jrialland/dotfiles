@@ -1,4 +1,4 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python3
 import sys
 import json
 import re
@@ -12,8 +12,8 @@ first = True
 for s in chunk(sys.stdin.read()):
     s = re.sub('}$', '', json.dumps({'s':s}).split(':')[1])
     if first:
-        print 'String '+varName+' = '+ s +';'
+        print('String '+varName+' = '+ s +';')
         first = False
     else:
-       print varName + ' += ' + s +';'
+       print(varName + ' += ' + s +';')
 
