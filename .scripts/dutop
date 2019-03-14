@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 # Show top disk space users in current directory,
 # while automatically recursing down directories if
@@ -30,6 +30,7 @@
 import os
 import sys
 import operator
+from functools import reduce
 
 cutoff_percentage=5
 
@@ -55,7 +56,7 @@ def print_du(path):
     dulist=None
 
     keys = filedict.keys()
-    keys.sort() #dict randomizes keys
+    keys = sorted(keys) #dict randomizes keys
     keys.reverse()
     total=reduce(operator.add, [item[0] for item in keys])
     found_one=0
@@ -72,12 +73,12 @@ def print_du(path):
             if print_du(name):
                 return 1
         found_one=1
-        print "%2d%%%10s    " % (percentage, human(size)),
+        sys.stdout.write("%2d%%%10s    " % (percentage, human(size)))
         for name in names:
             if isdir:
                 sys.stdout.write("\033[01;34m")
-            print name,
-        print "\033[00m"
+            print(name),
+        print("\033[00m")
     return found_one
 
 if len(sys.argv) == 1:
