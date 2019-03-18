@@ -1,3 +1,5 @@
 
 alias less='less -R'
 
+alias make='make -j8'
+
