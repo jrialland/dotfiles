@@ -31,6 +31,11 @@ parser.add_argument('--separator', dest='separator', default=' ')
 
 
 args = parser.parse_args()
+if not ' from ' in args.query:
+    args.query += ' from data'
+if not 'select ' in args.query:
+    args.query = 'select ' + args.query
+
 rs = conn.execute(args.query)
 
 if args.header:
