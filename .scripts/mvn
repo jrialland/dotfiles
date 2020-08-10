@@ -6,12 +6,13 @@ if [ -f ./mvnw ]; then
 	exit $?
 fi
 
-MVN_DIST_VER=3.5.4
+MVN_DIST_VER=3.6.3
 TMP_DIR="$HOME/.mvnw/$MVN_DIST_VER"
 if [ ! -d "$TMP_DIR" ]; then
     mkdir -p "$TMP_DIR"
     pushd "$TMP_DIR"
-    wget "https://repo1.maven.org/maven2/org/apache/maven/apache-maven/$MVN_DIST_VER/apache-maven-$MVN_DIST_VER-bin.tar.gz" -q -O - | tar -zxv
+    #wget "https://repo1.maven.org/maven2/org/apache/maven/apache-maven/$MVN_DIST_VER/apache-maven-$MVN_DIST_VER-bin.tar.gz" -q -O - | tar -zxv
+    wget "https://apache.mediamirrors.org/maven/maven-3/$MVN_DIST_VER/binaries/apache-maven-$MVN_DIST_VER-bin.tar.gz" -q -O - | tar -zxv
     chmod +x apache-maven-$MVN_DIST_VER/bin/mvn
     popd
 fi
