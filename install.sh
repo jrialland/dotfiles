@@ -5,7 +5,16 @@ thisdir=$(dirname $(readlink -m $0))
 thisscript=$(basename $0)
 pushd $thisdir >/dev/null
 
-source /lib/lib/init-functions
+NOCOLOR='\033[0m'
+LIGHTGREEN='\033[1;32m'
+
+function log_success_message {
+    echo -e "${LIGHTGREEN}[SUCCESS]${NOCOLOR}" $1
+}
+
+if [ -f /lib/lib/init-functions ]; then
+    source /lib/lib/init-functions
+fi
 
 #link all directories to ~ except the ones mentionned
 for item in $(find ./ -mindepth 1 -maxdepth 1); do
@@ -21,7 +30,9 @@ done
 
 
 #re-run the new bashrc
-. $HOME/.bashrc
+set +eu
+source $HOME/.bashrc
+set -eu
 log_success_message "re-run ~/.bashrc"
 popd >/dev/null
 
