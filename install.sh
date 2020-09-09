@@ -16,9 +16,12 @@ if [ -f /lib/lib/init-functions ]; then
     source /lib/lib/init-functions
 fi
 
+#install powerline-shell
+cd $"$thisdir/.tools/powerline-shell" && sudo python setup.py install
+
 #link all directories to ~ except the ones mentionned
 for item in $(find ./ -mindepth 1 -maxdepth 1); do
-    if echo "./$thisscript ./.git ./.gitignore ./.gitmodules" | grep -w $item > /dev/null; then
+    if echo "./$thisscript ./.git ./.gitignore ./.gitmodules .tools" | grep -w $item > /dev/null; then
         true
     else
         target="$HOME/$(basename $item)"
@@ -27,7 +30,6 @@ for item in $(find ./ -mindepth 1 -maxdepth 1); do
 	log_success_message "created symlink $target"
     fi
 done
-
 
 #re-run the new bashrc
 set +eu
@@ -52,6 +54,7 @@ git config --global user.email "julien.rialland@gmail.com"
 git config --global user.name "jrialland"
 git config --global credential.helper store
 log_success_message "added some configuration for git"
+
 
 #install nvm
 wget -qO- https://raw.gitusercontent.com/creationix/nvm/v0.34.0/install.sh | bash
