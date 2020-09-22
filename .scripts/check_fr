@@ -7,5 +7,5 @@ curl -s --fail -X POST --header 'Content-Type: application/x-www-form-urlencoded
     --data-urlencode "text=$T" \
     --data-urlencode "language=fr" \
     --data-urlencode "enabledOnly=false" \
-    'https://languagetool.org/api/v2/check'|jq
+    'https://languagetool.org/api/v2/check' | jq '.matches[]  | [.offset, .message]'
 echo
