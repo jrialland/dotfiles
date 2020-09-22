@@ -16,20 +16,25 @@ if [ -f /lib/lib/init-functions ]; then
     source /lib/lib/init-functions
 fi
 
+function create_symlink {
+	ln -s $1 $2
+	log_success_message "created symlink $2"
+}
+
+#add some useful directories
+mkdir -p ~/.local/bin
+log_success_message "created ~/.local/bin"
+
+#add a directory for our own scripts
+create_symlink $thisdir/.scripts $HOME/.scripts
+
+mkdir -p $HOME/.local/.config
+create_symlink $thisdir/.config/powerline-shell $HOME/.local/.config/powerline-shell
+
+
 #install powerline-shell
 cd $"$thisdir/.tools/powerline-shell" && sudo python setup.py install
 
-#link all directories to ~ except the ones mentionned
-for item in $(find ./ -mindepth 1 -maxdepth 1); do
-    if echo "./$thisscript ./.git ./.gitignore ./.gitmodules .tools" | grep -w $item > /dev/null; then
-        true
-    else
-        target="$HOME/$(basename $item)"
-        rm -rf "$target"
-        ln -s "$(readlink -m $item)" "$target"
-	log_success_message "created symlink $target"
-    fi
-done
 
 #re-run the new bashrc
 set +eu
@@ -44,10 +49,6 @@ git submodule init
 git submodule update Vundle.vim
 popd >/dev/null
 log_success_message "Vundle installed, do :PluginInstall in vim to end installation"
-
-#add some useful directories
-mkdir -p ~/.local/bin
-log_success_message "created ~/.local/bin"
 
 #some git config
 git config --global user.email "julien.rialland@gmail.com"
