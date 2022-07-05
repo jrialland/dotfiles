@@ -58,7 +58,7 @@ log_success_message "added some configuration for git"
 
 
 #install nvm
-wget -qO- https://raw.gitusercontent.com/creationix/nvm/v0.34.0/install.sh | bash
+wget -qO- https://raw.gitusercontent.com/creationix/nvm/v0.39.1/install.sh | bash
 log_success_message "installed nvm"
 
 #install latest lts version of node
