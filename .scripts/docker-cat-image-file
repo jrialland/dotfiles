@@ -1,0 +1,11 @@
+#!/bin/bash
+set -euo pipefail
+
+# create a temporary container
+container_id=$(docker create $1)
+# when this script exits, destroy it in any case
+trap "docker rm $container_id > /dev/null" EXIT
+# remove the first slash
+filename=$(echo "$2" | sed -e s_^/__)
+# extract the file
+docker export $container_id | tar -x --to-stdout $filename

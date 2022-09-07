@@ -1,0 +1,6 @@
+#!/bin/bash
+set -euo pipefail
+container_id=$(docker create $1)
+trap "docker rm $container_id > /dev/null" EXIT
+docker export $container_id | tar -t | awk '{print "/"$0}'
+
