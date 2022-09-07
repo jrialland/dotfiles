@@ -12,6 +12,13 @@ function log_success_message {
     echo -e "${LIGHTGREEN}[SUCCESS]${NOCOLOR}" $1
 }
 
+function rerun_bashrc {
+    set +eu
+    source $HOME/.bashrc
+    set -eu
+    log_success_message "re-run ~/.bashrc"
+}
+
 if [ -f /lib/lib/init-functions ]; then
     source /lib/lib/init-functions
 fi
@@ -37,10 +44,7 @@ cd $"$thisdir/.tools/powerline-shell" && sudo python setup.py install
 
 
 #re-run the new bashrc
-set +eu
-source $HOME/.bashrc
-set -eu
-log_success_message "re-run ~/.bashrc"
+rerun_bashrc
 popd >/dev/null
 
 #install vundle so vim can install the other plugins using :PluginInstall
@@ -58,8 +62,9 @@ log_success_message "added some configuration for git"
 
 
 #install nvm
-wget -qO- https://raw.gitusercontent.com/creationix/nvm/v0.34.0/install.sh | bash
+wget -qO- https://raw.gitusercontent.com/creationix/nvm/v0.39.1/install.sh | bash
 log_success_message "installed nvm"
+rerun_bashrc
 
 #install latest lts version of node
 NODEVERSION='lts/'$(nvm ls-remote | grep "Latest LTS" | cut -d':' -f2 | sed -s s/\)//|tail -1|awk '{print $1}')
