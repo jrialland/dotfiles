@@ -1,5 +1,11 @@
-#!/bin/bash
+#!/usr/bin/env bash
+# vim:sw=2:ts=2:et:ft=shset -euo pipefail
 set -euo pipefail
+IFS=$'\n\t'
+thisscript=$(readlink -m "$0")
+thisdir=$(dirname "$thisscript")
+cd "$thisdir"
+
 container_id=$(docker create $1)
 trap "docker rm $container_id > /dev/null" EXIT
 docker export $container_id | tar -t | awk '{print "/"$0}'
